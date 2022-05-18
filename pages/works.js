@@ -7,6 +7,7 @@ import mindfulness from '../public/images/works/mindfulness.png'
 import washed from '../public/images/works/washed.png'
 import diabetes from '../public/images/works/diabetes.jpeg'
 import async from '../public/images/works/async.png'
+import portfolio from '../public/images/works/portfolio.png'
 
 const Works = () => (
   <Layout title="Works">
@@ -28,6 +29,15 @@ const Works = () => (
             thumbnail={diabetes}
           >
             Classifying the presence of diabetes from scratch using analytics
+          </WorkGridItem>
+        </Section>
+        <Section>
+          <WorkGridItem
+            id="portfolio"
+            title="Personal Portfolio"
+            thumbnail={portfolio}
+          >
+            A person portfolio to display projects
           </WorkGridItem>
         </Section>
       </SimpleGrid>

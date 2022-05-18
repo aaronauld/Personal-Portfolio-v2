@@ -4,14 +4,11 @@ import {
   Link,
   List,
   ListItem,
-  UnorderedList,
-  Heading,
   Image,
   Center
 } from '@chakra-ui/react'
 import Layout from '../../components/layouts/article'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
-import { Title, WorkImage, Meta } from '../../components/work'
+import { Title, Meta } from '../../components/work'
 import P from '../../components/paragraph'
 
 const Work = () => (
@@ -37,7 +34,7 @@ const Work = () => (
         </ListItem>
         <ListItem>
           <Meta>Stack</Meta>
-          <span>React JS, Gatsby, Tailwind CSS</span>
+          <span>React.js, Gatsby.js, Tailwind CSS</span>
         </ListItem>
         <ListItem>
           <Meta>Website</Meta>

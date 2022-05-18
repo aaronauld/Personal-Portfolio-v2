@@ -4,15 +4,11 @@ import {
   Link,
   List,
   ListItem,
-  SimpleGrid,
-  UnorderedList,
-  Heading,
   Center,
   Image
 } from '@chakra-ui/react'
 import Layout from '../../components/layouts/article'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
-import { Title, WorkImage, Meta } from '../../components/work'
+import { Title, Meta } from '../../components/work'
 import P from '../../components/paragraph'
 
 const Work = () => (
@@ -35,7 +31,7 @@ const Work = () => (
         </ListItem>
         <ListItem>
           <Meta>Stack</Meta>
-          <span>MongoDB, Express, React JS, Node JS</span>
+          <span>MongoDB, Express.js, React.js, Node.js</span>
         </ListItem>
         <ListItem>
           <Meta>Github</Meta>
