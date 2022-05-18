@@ -23,7 +23,7 @@ const Work = () => (
       <P>Classifying the presence of diabetes from scratch using analytics.</P>
       <br/>
       <div>
-        Implemented K&#45;Nearest Neighbours and Naive Bayes from scratch to predict presence of diabetes based on differing health measurements. Algorithms produced accuracy of &#x7e;75&#37; for 5NN and Naive Bayes. Weka was utilised to conduct feature selection and compare our algorithms with those inbuilt into Weka. Such algorithms can be used in conjuction with domain specific knowledge to provide preliminary understanding of patient's likelihood of having diabetes.
+        Implemented K&#45;Nearest Neighbours and Naive Bayes from scratch to predict presence of diabetes based on differing health measurements. Algorithms produced accuracy of &#x7e;75&#37; for 5NN and Naive Bayes. Weka was utilised to conduct feature selection and compare our algorithms with those inbuilt into Weka. Such algorithms can be used in conjuction with domain specific knowledge to provide preliminary understanding of patients likelihood of having diabetes.
       </div>
 
       <List ml={4} my={4}>
