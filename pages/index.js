@@ -60,7 +60,7 @@ const Home = () => (
             overflow="hidden"
           >
             <ProfileImage
-              src="/images/works/inkdrop_01.png"
+              src="/images/aaron.jpg"
               alt="Profile image"
               borderRadius="full"
               width="100%"
@@ -117,7 +117,7 @@ const Home = () => (
           I Enjoy
         </Heading>
         <Paragraph>
-          Music, practising mindfulness, bouldering, basketball and reading
+          Snow, practising mindfulness, bouldering, basketball and reading
         </Paragraph>
       </Section>
 
