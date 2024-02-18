@@ -15,11 +15,11 @@ import Paragraph from '../components/paragraph'
 import { BioSection, BioYear } from '../components/bio'
 import Layout from '../components/layouts/article'
 import Section from '../components/section'
-import {IoLogoGithub, IoLogoLinkedin } from 'react-icons/io5'
+import { IoLogoGithub, IoLogoLinkedin } from 'react-icons/io5'
 import Image from 'next/image'
 
 const ProfileImage = chakra(Image, {
-  shouldForwardProp: prop => ['width', 'height', 'src', 'alt'].includes(prop)
+  shouldForwardProp: (prop) => ['width', 'height', 'src', 'alt'].includes(prop)
 })
 
 const Home = () => (
@@ -33,7 +33,8 @@ const Home = () => (
         bg={useColorModeValue('whiteAlpha.500', 'whiteAlpha.200')}
         css={{ backdropFilter: 'blur(10px)' }}
       >
-        I&apos;m a Sydney, Australia based web developer and inspired entrepreneur!
+        I&apos;m a Sydney, Australia based web developer and inspired
+        entrepreneur!
       </Box>
 
       <Box display={{ md: 'flex' }}>
@@ -41,7 +42,7 @@ const Home = () => (
           <Heading as="h2" variant="page-title">
             Aaron Auld
           </Heading>
-          <p>Solutions Consultant (UI/UX) @ Adobe / Co-Founder of Async Development</p>
+          <p>Software Engineer @ Lab3 / Co-Founder of Async Development</p>
         </Box>
         <Box
           flexShrink={0}
@@ -60,7 +61,7 @@ const Home = () => (
             overflow="hidden"
           >
             <ProfileImage
-              src="/images/aaron.jpg"
+              src="/images/aaronhead.jpg"
               alt="Profile image"
               borderRadius="full"
               width="100%"
@@ -75,11 +76,15 @@ const Home = () => (
           About Me
         </Heading>
         <Paragraph>
-          Hey, my name&apos;s Aaron, I was born and raised in Sydney Australia currently working towards inspiring and transforming the world forward through greater experiences at Adobe. Founder of {' '}
+          Hey, my name&apos;s Aaron, I was born and raised in Sydney Australia
+          currently working towards inspiring and transforming the world forward
+          through greater experiences at Lab3. Founder of{'  '}
           <NextLink href="https://asyncweb.dev/" passHref>
             <Link target="_blank">Async Development </Link>
           </NextLink>
-           I am motivated to providing aesthetic web solutions to suit all needs. My passion for building all things tech will continue to grow as I continue to develop my skills!
+          I am motivated to providing aesthetic web solutions to suit all needs.
+          My passion for building all things tech will continue to grow as I
+          continue to develop my skills!
         </Paragraph>
         <Box align="center" my={4}>
           <NextLink href="/works" passHref scroll={false}>
@@ -100,15 +105,26 @@ const Home = () => (
         </BioSection>
         <BioSection>
           <BioYear>2019</BioYear>
-          Commenced a double degree of Bachelor&apos;s of Advanced Computing and Bachelor&apos;s of Commerce. Majoring in computational data science and quantitative business analytics at the University of Sydney
+          Commenced a double degree of Bachelor&apos;s of Advanced Computing and
+          Bachelor&apos;s of Commerce. Majoring in computational data science
+          and quantitative business analytics at the University of Sydney
         </BioSection>
         <BioSection>
           <BioYear>2021</BioYear>
-          Founded Async Development a web development company based out of Sydney
+          Founded Async Development a web development company based out of
+          Sydney
         </BioSection>
         <BioSection>
           <BioYear>2022</BioYear>
           Worked at Adobe as a Solutions Consultant (UI / UX)
+        </BioSection>
+        <BioSection>
+          <BioYear>2023</BioYear>
+          Begun at Lab3 as a Graduate Engineer
+        </BioSection>
+        <BioSection>
+          <BioYear>2024</BioYear>
+          Promoted to Software Engineer at Lab3
         </BioSection>
       </Section>
 
@@ -117,7 +133,8 @@ const Home = () => (
           I Enjoy
         </Heading>
         <Paragraph>
-          Snow, practising mindfulness, bouldering, basketball and reading
+          Travelling, practising mindfulness, reading and participating in all
+          sports.
         </Paragraph>
       </Section>
 
