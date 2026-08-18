@@ -1,0 +1,206 @@
+.hero {
+  position: relative;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  /* load-bearing: reads as the hard surface the letters land on */
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.kickerWrap {
+  position: absolute;
+  left: var(--gutter);
+  top: clamp(96px, 13vh, 140px);
+  z-index: 4;
+  pointer-events: none;
+  max-width: min(88vw, 430px);
+}
+
+.physLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.stack {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1vh, 14px);
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 1vh, 14px);
+  margin: 0;
+  font-weight: 400;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.letter {
+  font-family: var(--font-serif), serif;
+  font-size: clamp(3.2rem, 11vw, 9rem);
+  line-height: 0.86;
+  color: var(--ink-headline);
+  display: inline-block;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.letterAccent {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  justify-content: center;
+  margin-top: 8px;
+  max-width: min(92vw, 640px);
+}
+
+.pill {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(0.68rem, 1.3vw, 0.9rem);
+  color: var(--ink-strong);
+  background: var(--surface-pill);
+  border: 1px solid var(--rule-pill);
+  border-radius: 999px;
+  padding: 9px 15px;
+  display: inline-block;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  white-space: nowrap;
+  box-shadow: var(--shadow-pill);
+}
+
+/* One wrapping row — two independently anchored clusters overlap below ~820px */
+.bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(26px, 5vh, 46px);
+  z-index: 4;
+  padding: 0 var(--gutter);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px 24px;
+  /* the physics layer beneath stays grabbable everywhere but the controls */
+  pointer-events: none;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.cta,
+.outline,
+.reset {
+  pointer-events: auto;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 13px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-cta);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.25s ease;
+}
+
+.cta:hover {
+  box-shadow: var(--shadow-cta-hover);
+}
+
+.outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-outline-btn);
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1.5px solid var(--rule-strong);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition:
+    transform 0.12s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.reset {
+  cursor: pointer;
+  background: none;
+  border: 1.5px solid var(--rule);
+  color: var(--ink-reset-btn);
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.reset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.meta {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  font-family: var(--font-mono), monospace;
+}
+
+.hint {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  animation: pulseHint 2.2s ease-in-out infinite;
+  padding-bottom: 4px;
+}
+
+.clockLabel {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.clockDigits {
+  font-size: 1rem;
+  color: var(--ink-clock);
+}

@@ -1,0 +1,28 @@
+/* the hero-to-About cut felt abrupt without this */
+.connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(24px, 4vh, 44px) 20px clamp(4px, 1vh, 12px);
+}
+
+.arrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: var(--muted);
+  animation: bob 1.8s ease-in-out infinite;
+}
+
+.line {
+  width: 1px;
+  height: clamp(34px, 6vh, 68px);
+  background: linear-gradient(to bottom, oklch(0.9 0.012 74 / 0), oklch(0.8 0.014 74));
+}
+
+.label {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+}

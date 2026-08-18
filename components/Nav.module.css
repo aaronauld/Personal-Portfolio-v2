@@ -1,0 +1,73 @@
+.nav {
+  position: fixed;
+  top: 2px;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px var(--gutter);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-rule);
+}
+
+.wordmark {
+  font-family: var(--font-serif), serif;
+  font-size: 1.35rem;
+  color: var(--ink-h2);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 26px);
+  font-size: 0.88rem;
+}
+
+.link {
+  color: var(--ink-nav);
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--ink-h2);
+}
+
+.github {
+  color: var(--accent);
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.github:hover {
+  opacity: 0.75;
+}
+
+.progressTrack {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 60;
+  background: var(--progress-track);
+}
+
+.progressFill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+}
+
+.wash {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 620px at 84% -8%, oklch(0.72 0.16 34 / 0.13), transparent 60%),
+    radial-gradient(900px 520px at -6% 104%, oklch(0.78 0.13 66 / 0.1), transparent 55%);
+}

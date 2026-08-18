@@ -1,0 +1,12 @@
+/* overflow-x: clip, not hidden — hidden makes this a scroll container and
+   silently breaks every position:sticky descendant */
+.root {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}

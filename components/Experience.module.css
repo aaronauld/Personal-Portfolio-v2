@@ -1,0 +1,59 @@
+.section {
+  padding: clamp(48px, 8vh, 92px) var(--gutter);
+}
+
+.kicker {
+  margin-bottom: 34px;
+}
+
+.list {
+  border-top: 1px solid var(--rule);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(10px, 2vw, 30px);
+  align-items: baseline;
+  padding: 26px 4px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.row[data-reveal] {
+  transition:
+    opacity 0.8s var(--ease-reveal),
+    transform 0.3s ease,
+    border-color 0.2s ease;
+}
+
+.row[data-revealed]:hover {
+  transform: translateX(10px);
+}
+
+.company {
+  flex: 0 0 auto;
+  font-family: var(--font-serif), serif;
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  color: var(--ink-h2);
+  min-width: min(100%, 170px);
+}
+
+.note {
+  flex: 1 1 240px;
+  font-size: 0.98rem;
+  color: var(--body);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.title {
+  color: var(--ink-strong);
+  font-weight: 600;
+}
+
+.years {
+  flex: 0 0 auto;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}

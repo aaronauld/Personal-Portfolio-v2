@@ -1,0 +1,120 @@
+.about {
+  position: relative;
+}
+
+.grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 clamp(20px, 4vw, 48px);
+}
+
+.left {
+  flex: 1 1 400px;
+  min-width: min(100%, 320px);
+}
+
+/* top:58px clears the fixed nav — at top:0 the globe slid under it */
+.sticky {
+  position: sticky;
+  top: 58px;
+  height: calc(100svh - 58px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: min(70vw, 560px);
+}
+
+.halo {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 46%, oklch(0.76 0.15 40 / 0.18), transparent 62%);
+  filter: blur(8px);
+}
+
+.mount {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.caption {
+  position: absolute;
+  left: 2px;
+  bottom: 2px;
+  z-index: 2;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.right {
+  flex: 1 1 420px;
+  min-width: min(100%, 320px);
+  padding: clamp(48px, 9vh, 96px) 0 clamp(48px, 9vh, 96px) clamp(0px, 3vw, 40px);
+}
+
+.kicker {
+  margin-bottom: 22px;
+}
+
+.headline {
+  font-family: var(--font-serif), serif;
+  font-size: clamp(1.9rem, 3.9vw, 3.1rem);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: oklch(0.25 0.014 55);
+  margin: 0 0 30px;
+}
+
+.body {
+  font-size: 1.08rem;
+  line-height: 1.62;
+  color: var(--body);
+  margin: 0 0 34px;
+  max-width: 44ch;
+}
+
+.facts {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  max-width: 52ch;
+}
+
+.fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 2px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+}
+
+.fact[data-reveal] {
+  transform: translateY(20px);
+  transition-duration: 0.7s;
+}
+
+.factLabel {
+  color: var(--muted);
+}
+
+.factValue {
+  color: var(--ink-strong);
+  transition: color 0.2s ease;
+}
+
+.fact:hover .factValue {
+  color: var(--accent);
+}

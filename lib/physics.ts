@@ -1,0 +1,224 @@
+type MatterAPI = typeof import('matter-js');
+
+/** matter binds these to the element in Mouse.create; the types don't expose them. */
+type MouseListeners = {
+  mousewheel?: EventListener;
+  mousedown: EventListener;
+  mousemove: EventListener;
+  mouseup: EventListener;
+};
+
+type Options = { reducedMotion?: boolean };
+
+const MAX_SPEED = 45; // keep a hard fling inside the stage
+const WALL_THICKNESS = 400; // matter has no CCD — thin walls let a fling tunnel out
+const FLOOR_GAP = 10; // rest just above the hero's bottom rule
+
+const INLINE_PROPS = [
+  'position',
+  'left',
+  'top',
+  'width',
+  'height',
+  'transform',
+  'display',
+  'margin',
+  'willChange',
+  'alignItems',
+  'justifyContent',
+] as const;
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+function clearInlineLayout(el: HTMLElement) {
+  const style = el.style as unknown as Record<string, string>;
+  for (const prop of INLINE_PROPS) style[prop] = '';
+}
+
+/**
+ * Turns every [data-letter] inside [data-phys] into a rigid body. Gravity starts
+ * at 0 so the name holds its typeset position; the first grab switches it on.
+ *
+ * The setup order matters — see the handoff notes: fonts, then a settled layout
+ * pass, then clear any inline positioning from a previous run, then measure.
+ */
+export async function setupPhysics(
+  root: HTMLElement,
+  options: Options = {},
+): Promise<{ elements: HTMLElement[]; destroy: () => void } | null> {
+  const reducedMotion = options.reducedMotion ?? false;
+  const layer = root.querySelector<HTMLElement>('[data-phys]');
+  if (!layer) return null;
+
+  const imported = await import('matter-js');
+  const M: MatterAPI =
+    (imported as unknown as { default?: MatterAPI }).default ?? (imported as unknown as MatterAPI);
+  const { Engine, Composite, Bodies, Body, Mouse, MouseConstraint, Events, Runner } = M;
+
+  // race, never await bare — a hidden tab never settles document.fonts.ready
+  if (document.fonts?.ready) {
+    await Promise.race([document.fonts.ready, sleep(1500)]);
+  }
+  // settle one layout pass, but never block on rAF alone (frozen while hidden)
+  await Promise.race([
+    new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))),
+    sleep(300),
+  ]);
+
+  const elements = Array.from(layer.querySelectorAll<HTMLElement>('[data-letter]'));
+  if (!elements.length) return null;
+
+  // measure the pristine flow layout, never a scattered one, or "home" is garbage
+  elements.forEach(clearInlineLayout);
+  void layer.offsetHeight; // force reflow
+
+  for (let tries = 0; tries < 10; tries++) {
+    if (elements[0].getBoundingClientRect().width > 0) break;
+    await sleep(120);
+  }
+
+  const layerRect = layer.getBoundingClientRect();
+  const items = elements.map((el) => {
+    const rect = el.getBoundingClientRect();
+    return {
+      el,
+      w: rect.width,
+      h: rect.height,
+      x: rect.left - layerRect.left + rect.width / 2,
+      y: rect.top - layerRect.top + rect.height / 2,
+    };
+  });
+
+  items.forEach((item) => {
+    const style = item.el.style;
+    style.position = 'absolute';
+    style.left = '0';
+    style.top = '0';
+    style.width = `${item.w}px`;
+    style.height = `${item.h}px`;
+    style.display = 'flex';
+    style.alignItems = 'center';
+    style.justifyContent = 'center';
+    style.margin = '0';
+    style.transform = `translate(${item.x - item.w / 2}px, ${item.y - item.h / 2}px)`;
+    style.willChange = 'transform';
+  });
+
+  const engine = Engine.create();
+  engine.gravity.y = 0; // the name stays typeset until someone grabs it
+
+  const bodies = items.map((item) =>
+    Bodies.rectangle(item.x, item.y, Math.max(6, item.w - 4), Math.max(6, item.h - 6), {
+      restitution: 0.34,
+      friction: 0.3,
+      frictionAir: 0.016,
+      chamfer: { radius: 5 },
+    }),
+  );
+  Composite.add(engine.world, bodies);
+
+  const makeWalls = () => {
+    const w = layer.clientWidth;
+    const h = layer.clientHeight;
+    const floorTop = h - FLOOR_GAP;
+    const opts = { isStatic: true };
+    return [
+      Bodies.rectangle(w / 2, floorTop + WALL_THICKNESS / 2, Math.max(w * 2, 2000), WALL_THICKNESS, opts),
+      Bodies.rectangle(-WALL_THICKNESS / 2, h / 2, WALL_THICKNESS, Math.max(h * 4, 3000), opts),
+      Bodies.rectangle(w + WALL_THICKNESS / 2, h / 2, WALL_THICKNESS, Math.max(h * 4, 3000), opts),
+      Bodies.rectangle(w / 2, -900 - WALL_THICKNESS / 2, Math.max(w * 2, 2000), WALL_THICKNESS, opts),
+    ];
+  };
+  let walls = makeWalls();
+  Composite.add(engine.world, walls);
+
+  const mouse = Mouse.create(layer);
+  const mouseConstraint = MouseConstraint.create(engine, {
+    mouse,
+    constraint: { stiffness: 0.16, damping: 0.05, render: { visible: false } },
+  });
+  Composite.add(engine.world, mouseConstraint);
+
+  // detach matter's own wheel and touch listeners, or the toy eats page
+  // scrolling on trackpads and mobile
+  const listeners = mouse as unknown as MouseListeners;
+  if (listeners.mousewheel) {
+    layer.removeEventListener('wheel', listeners.mousewheel);
+    layer.removeEventListener('DOMMouseScroll', listeners.mousewheel);
+  }
+  layer.removeEventListener('touchstart', listeners.mousedown);
+  layer.removeEventListener('touchmove', listeners.mousemove);
+  layer.removeEventListener('touchend', listeners.mouseup);
+
+  const hint = root.querySelector<HTMLElement>('[data-hint]');
+  const wake = () => {
+    if (reducedMotion) return; // leave the composition typeset
+    engine.gravity.y = 1;
+    if (hint) {
+      hint.style.transition = 'opacity .4s';
+      hint.style.opacity = '0';
+    }
+  };
+  Events.on(mouseConstraint, 'startdrag', wake);
+  const onTouchStart = () => wake();
+  layer.addEventListener('touchstart', onTouchStart, { passive: true });
+
+  const onAfterUpdate = () => {
+    for (let i = 0; i < items.length; i++) {
+      const body = bodies[i];
+      const item = items[i];
+      const v = body.velocity;
+      const speedSq = v.x * v.x + v.y * v.y;
+      if (speedSq > MAX_SPEED * MAX_SPEED) {
+        const scale = MAX_SPEED / Math.sqrt(speedSq);
+        Body.setVelocity(body, { x: v.x * scale, y: v.y * scale });
+      }
+      item.el.style.transform = `translate(${body.position.x - item.w / 2}px, ${
+        body.position.y - item.h / 2
+      }px) rotate(${body.angle}rad)`;
+    }
+  };
+  Events.on(engine, 'afterUpdate', onAfterUpdate);
+
+  const runner = Runner.create();
+  Runner.run(runner, engine);
+
+  const resetButton = root.querySelector<HTMLElement>('[data-reset]');
+  const reset = () => {
+    engine.gravity.y = 0;
+    bodies.forEach((body, i) => {
+      Body.setPosition(body, { x: items[i].x, y: items[i].y });
+      Body.setAngle(body, 0);
+      Body.setVelocity(body, { x: 0, y: 0 });
+      Body.setAngularVelocity(body, 0);
+    });
+    if (hint) hint.style.opacity = '';
+  };
+  resetButton?.addEventListener('click', reset);
+
+  const onResize = () => {
+    Composite.remove(engine.world, walls);
+    walls = makeWalls();
+    Composite.add(engine.world, walls);
+  };
+  window.addEventListener('resize', onResize);
+
+  return {
+    elements,
+    destroy: () => {
+      try {
+        Runner.stop(runner);
+        Events.off(engine, 'afterUpdate', onAfterUpdate);
+        Events.off(mouseConstraint, 'startdrag', wake);
+        Engine.clear(engine);
+      } catch {
+        /* already torn down */
+      }
+      window.removeEventListener('resize', onResize);
+      layer.removeEventListener('touchstart', onTouchStart);
+      resetButton?.removeEventListener('click', reset);
+      elements.forEach(clearInlineLayout);
+      if (hint) hint.style.opacity = '';
+    },
+  };
+}

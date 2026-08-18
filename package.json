@@ -1,35 +1,35 @@
 {
-  "name": "portfolio-homepage",
-  "version": "1.0.0",
-  "description": "Aaron's website",
-  "scripts": {
-    "dev": "next dev -H 0.0.0.0",
-    "build": "next build",
-    "start": "next start",
-    "prettier": "prettier --write .",
-    "lint": "next lint"
-  },
-  "keywords": [],
+  "name": "aaron-auld-site",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Personal site for Aaron Auld",
   "author": "Aaron Auld",
   "license": "MIT",
   "engines": {
     "node": "22.x"
   },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
-    "@chakra-ui/icons": "^1.1.7",
-    "@chakra-ui/react": "^1.8.8",
-    "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.8.1",
-    "framer-motion": "^6.3.0",
-    "next": "^12.1.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-icons": "^4.3.1",
-    "three": "^0.139.2"
+    "matter-js": "^0.20.0",
+    "next": "^16.3.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.185.1"
   },
   "devDependencies": {
-    "eslint": "^8.13.0",
-    "eslint-config-next": "^12.1.5",
-    "prettier": "^2.6.2"
+    "@types/matter-js": "^0.20.2",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/three": "^0.185.4",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.1",
+    "typescript": "^5.9.3"
   }
 }

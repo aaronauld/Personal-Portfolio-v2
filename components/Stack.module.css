@@ -1,0 +1,50 @@
+.section {
+  padding: clamp(40px, 6vh, 72px) 0 0;
+}
+
+.kicker {
+  padding: 0 var(--gutter) 20px;
+}
+
+.band {
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  padding: 16px 0;
+}
+
+/* the marquee's own bottom rule terminates the section */
+.bandLast {
+  border-bottom: 1px solid var(--rule);
+}
+
+/* the list is duplicated in the DOM and the keyframes translate -50%,
+   which is what makes the loop seamless */
+.track {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+
+.trackReverse {
+  animation: marqueeR 38s linear infinite;
+}
+
+.half {
+  display: inline-flex;
+  align-items: center;
+}
+
+.item {
+  font-family: var(--font-serif), serif;
+  font-size: clamp(1.4rem, 2.9vw, 2.3rem);
+  color: var(--ink-strong);
+  padding: 0 20px;
+  white-space: nowrap;
+}
+
+.itemAccent {
+  font-style: italic;
+  color: var(--accent);
+  opacity: 0.85;
+}

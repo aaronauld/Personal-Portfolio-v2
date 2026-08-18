@@ -1,0 +1,63 @@
+/* no top border — the marquee's bottom rule already terminates the section */
+.footer {
+  padding: clamp(44px, 6.5vh, 80px) var(--gutter) 44px;
+}
+
+.kicker {
+  margin-bottom: 16px;
+}
+
+.headline {
+  font-family: var(--font-serif), serif;
+  font-size: clamp(2.5rem, 8.5vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  color: var(--ink-h2);
+  margin: 0 0 44px;
+}
+
+.links {
+  border-top: 1px solid var(--rule);
+}
+
+.link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 4px;
+  border-bottom: 1px solid var(--rule);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  color: var(--ink);
+}
+
+.link[data-reveal] {
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s var(--ease-reveal),
+    transform 0.25s ease,
+    color 0.2s ease,
+    padding 0.25s ease;
+}
+
+.link[data-revealed]:hover {
+  color: var(--accent);
+  padding-left: 18px;
+}
+
+.value {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  color: oklch(0.5 0.016 58);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 52px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
