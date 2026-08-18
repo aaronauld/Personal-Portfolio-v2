@@ -43,22 +43,13 @@ export function Hero() {
         </div>
       </div>
 
-      {/* aimed at the measured pill row by lib/physics.ts — the tip has to track
-          the centred composition, not the bottom bar's flex layout */}
-      <svg
-        className={s.hintArrow}
-        viewBox="0 0 260 190"
-        aria-hidden="true"
-        data-hint
-        data-hint-arrow
-      >
-        {/* dash length is the measured path length (304u), rounded up */}
-        <path
-          className={s.hintArrowPath}
-          strokeDasharray="320"
-          d="M246 172C196 180 96 172 52 116 34 94 26 60 24 28"
-        />
-        <path className={s.hintArrowHead} d="M15.7 46.2 24 28l10.5 17" />
+      {/* Both endpoints are measured, so the curve itself is generated in
+          lib/physics.ts: it runs from the GRAB A LETTER label up to the bottom
+          centre of the composition. The viewBox is set to the layer's pixel
+          size, so path units are layer coordinates. */}
+      <svg className={s.hintArrow} aria-hidden="true" data-hint data-hint-arrow>
+        <path className={s.hintArrowPath} />
+        <path className={s.hintArrowHead} />
       </svg>
 
       <div className={s.bar}>

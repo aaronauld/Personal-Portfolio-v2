@@ -3,7 +3,7 @@
    the animation off (reduced motion) leaves it fully drawn. */
 @keyframes drawArrow {
   0% {
-    stroke-dashoffset: 320;
+    stroke-dashoffset: var(--dash, 600);
     opacity: 0;
   }
   14% {
@@ -230,17 +230,16 @@
   padding-bottom: 4px;
 }
 
-/* A long swoop ending in an arrowhead that points up at the pills. Its
-   left/top are written by lib/physics.ts from the measured pill row —
-   anchoring it in the bottom bar left the tip drifting with viewport width. */
+/* A swoop from the hint label up to the bottom centre of the composition.
+   lib/physics.ts writes the geometry from measured endpoints — anchoring it in
+   the bottom bar's flex layout left the tip drifting with viewport width. */
 .hintArrow {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 4;
   pointer-events: none;
-  width: clamp(132px, 21vw, 264px);
-  height: auto;
   overflow: visible;
   fill: none;
   stroke: var(--accent);
@@ -248,8 +247,8 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: opacity 0.4s ease;
-  /* nothing to point at until physics has measured the pill row; without this
-     it shows at the layer's top-left corner for a beat on load */
+  /* there is no path until physics has measured; without this the empty SVG
+     still counts as a hint node and flashes as it is populated */
   visibility: hidden;
 }
 
@@ -271,6 +270,8 @@
 }
 
 .hintArrowPath {
+  /* --dash is the generated path's measured length, set alongside it */
+  stroke-dasharray: var(--dash, 600);
   stroke-dashoffset: 0;
   animation: drawArrow 2.8s ease-in-out infinite;
 }

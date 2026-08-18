@@ -141,34 +141,58 @@ export async function setupPhysics(
   // Aim the grab hint at the pill row we just measured. The tip sits at
   // (24,28) in the arrow's 260x190 viewBox; place it a little under the row's
   // last pill so the swoop's tail still falls toward the label in the corner.
-  const arrow = root.querySelector<HTMLElement>('[data-hint-arrow]');
+  const arrow = root.querySelector<SVGSVGElement>('[data-hint-arrow]');
   const label = root.querySelector<HTMLElement>('[data-hint]:not([data-hint-arrow])');
   const pills = items.filter((item) => item.el.hasAttribute('data-pill'));
-  const ARROW_RATIO = 190 / 260; // viewBox aspect
-  const MIN_ARROW = 96;
 
+  /**
+   * Draws the grab hint: a swoop leaving the GRAB A LETTER label, sweeping
+   * left and rising into an arrowhead under the centre of the composition.
+   * Both ends are measured, so the curve is generated rather than scaled —
+   * the label tracks the bottom bar's flex layout while the composition is
+   * centred, and the two move independently.
+   */
   const aimArrow = () => {
-    if (!arrow || !pills.length) return;
+    if (!arrow || !label || !pills.length) return;
     arrow.removeAttribute('data-aimed');
-    arrow.style.width = ''; // back to the clamp before measuring
-    const natural = arrow.getBoundingClientRect().width;
-    if (!natural) return; // hidden on narrow layouts
+    if (!arrow.getBoundingClientRect().width) return; // hidden on narrow layouts
 
-    const last = pills[pills.length - 1];
-    const rowBottom = Math.max(...pills.map((p) => p.y + p.h / 2));
-    const top = rowBottom + 16;
+    const [curve, head] = Array.from(arrow.children) as SVGPathElement[];
+    if (!curve || !head) return;
 
-    // Short viewports leave little room between the pills and the bottom bar,
-    // and the tail ends up written across the label. Shrink to fit instead.
     const layerRect = layer.getBoundingClientRect();
-    const floor = label ? label.getBoundingClientRect().top - layerRect.top - 10 : layer.clientHeight;
-    const width = Math.min(natural, Math.max(0, floor - top) / ARROW_RATIO);
-    if (width < MIN_ARROW) return;
+    const labelRect = label.getBoundingClientRect();
 
-    arrow.style.width = `${width}px`;
-    const height = width * ARROW_RATIO;
-    arrow.style.left = `${last.x - (width * 24) / 260}px`;
-    arrow.style.top = `${top - (height * 28) / 190}px`;
+    // tail: just above the label. tip: under the middle of the pill row.
+    const from = {
+      x: labelRect.left + labelRect.width / 2 - layerRect.left,
+      y: labelRect.top - layerRect.top - 10,
+    };
+    const to = {
+      x: (Math.min(...pills.map((p) => p.x - p.w / 2)) + Math.max(...pills.map((p) => p.x + p.w / 2))) / 2,
+      y: Math.max(...pills.map((p) => p.y + p.h / 2)) + 16,
+    };
+
+    const dx = from.x - to.x;
+    const dy = from.y - to.y;
+    if (dy < 60 || Math.abs(dx) < 40) return; // no room for a legible curve
+
+    // leaves the label horizontally, arrives straight up under the pills
+    const c1 = { x: from.x - dx * 0.55, y: from.y + 2 };
+    const c2 = { x: to.x, y: to.y + dy * 0.62 };
+
+    arrow.setAttribute('viewBox', `0 0 ${layer.clientWidth} ${layer.clientHeight}`);
+    curve.setAttribute(
+      'd',
+      `M${from.x.toFixed(1)} ${from.y.toFixed(1)}C${c1.x.toFixed(1)} ${c1.y.toFixed(1)} ${c2.x.toFixed(1)} ${c2.y.toFixed(1)} ${to.x.toFixed(1)} ${to.y.toFixed(1)}`,
+    );
+    head.setAttribute(
+      'd',
+      `M${(to.x - 7).toFixed(1)} ${(to.y + 13).toFixed(1)}L${to.x.toFixed(1)} ${to.y.toFixed(1)}l7 13`,
+    );
+
+    // the draw animation needs the length of the curve we just generated
+    curve.style.setProperty('--dash', `${Math.ceil(curve.getTotalLength())}`);
     arrow.setAttribute('data-aimed', '');
   };
   aimArrow();
