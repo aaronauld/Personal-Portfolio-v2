@@ -248,6 +248,13 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: opacity 0.4s ease;
+  /* nothing to point at until physics has measured the pill row; without this
+     it shows at the layer's top-left corner for a beat on load */
+  visibility: hidden;
+}
+
+.hintArrow[data-aimed] {
+  visibility: visible;
 }
 
 /* below ~820px the bottom bar stacks, so the arrow would have to cross the

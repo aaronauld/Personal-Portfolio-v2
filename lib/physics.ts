@@ -72,15 +72,30 @@ export async function setupPhysics(
   elements.forEach(clearInlineLayout);
   void layer.offsetHeight; // force reflow
 
-  // ...and never an unstyled one either. On a cold start the stylesheet can
-  // land after hydration, and measuring bare spans pins every body to a
-  // garbage home position.
+  // ...and never an unstyled one either: if the stylesheet has not applied,
+  // these are bare spans and every home position would be garbage.
   const styled = (el: HTMLElement) =>
     getComputedStyle(el).getPropertyValue('--phys-ready').trim() === '1';
 
-  for (let tries = 0; tries < 20; tries++) {
-    if (styled(elements[0]) && elements[0].getBoundingClientRect().width > 0) break;
-    await sleep(120);
+  // Wait for the layout to hold still for two consecutive samples. The name is
+  // sized in vw, so measuring while the window is still settling to its final
+  // width (a preview pane, a restored window) captures boxes that are wrong the
+  // moment it stops.
+  let stable = 0;
+  let lastWidth = -1;
+  let lastHeight = -1;
+  for (let tries = 0; tries < 25; tries++) {
+    const width = layer.clientWidth;
+    const height = layer.clientHeight;
+    const ready = styled(elements[0]) && elements[0].getBoundingClientRect().width > 0;
+    if (ready && width === lastWidth && height === lastHeight) {
+      if (++stable >= 2) break;
+    } else {
+      stable = 0;
+    }
+    lastWidth = width;
+    lastHeight = height;
+    await sleep(80);
   }
 
   const layerRect = layer.getBoundingClientRect();
@@ -127,15 +142,34 @@ export async function setupPhysics(
   // (24,28) in the arrow's 260x190 viewBox; place it a little under the row's
   // last pill so the swoop's tail still falls toward the label in the corner.
   const arrow = root.querySelector<HTMLElement>('[data-hint-arrow]');
+  const label = root.querySelector<HTMLElement>('[data-hint]:not([data-hint-arrow])');
   const pills = items.filter((item) => item.el.hasAttribute('data-pill'));
+  const ARROW_RATIO = 190 / 260; // viewBox aspect
+  const MIN_ARROW = 96;
+
   const aimArrow = () => {
     if (!arrow || !pills.length) return;
-    const rect = arrow.getBoundingClientRect();
-    if (!rect.width) return; // hidden on narrow layouts
+    arrow.removeAttribute('data-aimed');
+    arrow.style.width = ''; // back to the clamp before measuring
+    const natural = arrow.getBoundingClientRect().width;
+    if (!natural) return; // hidden on narrow layouts
+
     const last = pills[pills.length - 1];
     const rowBottom = Math.max(...pills.map((p) => p.y + p.h / 2));
-    arrow.style.left = `${last.x - (rect.width * 24) / 260}px`;
-    arrow.style.top = `${rowBottom + 16 - (rect.height * 28) / 190}px`;
+    const top = rowBottom + 16;
+
+    // Short viewports leave little room between the pills and the bottom bar,
+    // and the tail ends up written across the label. Shrink to fit instead.
+    const layerRect = layer.getBoundingClientRect();
+    const floor = label ? label.getBoundingClientRect().top - layerRect.top - 10 : layer.clientHeight;
+    const width = Math.min(natural, Math.max(0, floor - top) / ARROW_RATIO);
+    if (width < MIN_ARROW) return;
+
+    arrow.style.width = `${width}px`;
+    const height = width * ARROW_RATIO;
+    arrow.style.left = `${last.x - (width * 24) / 260}px`;
+    arrow.style.top = `${top - (height * 28) / 190}px`;
+    arrow.setAttribute('data-aimed', '');
   };
   aimArrow();
 
@@ -244,6 +278,7 @@ export async function setupPhysics(
       resetButton?.removeEventListener('click', reset);
       elements.forEach(clearInlineLayout);
       hints.forEach((hint) => (hint.style.opacity = ''));
+      arrow?.removeAttribute('data-aimed');
     },
   };
 }
