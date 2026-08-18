@@ -6,11 +6,11 @@
     stroke-dashoffset: var(--dash, 600);
     opacity: 0;
   }
-  14% {
+  10% {
     opacity: 1;
   }
-  48%,
-  76% {
+  40%,
+  90% {
     stroke-dashoffset: 0;
     opacity: 1;
   }
@@ -22,11 +22,11 @@
 
 @keyframes arrowHead {
   0%,
-  40% {
+  34% {
     opacity: 0;
   }
-  52%,
-  76% {
+  44%,
+  90% {
     opacity: 1;
   }
   100% {
@@ -273,12 +273,12 @@
   /* --dash is the generated path's measured length, set alongside it */
   stroke-dasharray: var(--dash, 600);
   stroke-dashoffset: 0;
-  animation: drawArrow 2.8s ease-in-out infinite;
+  animation: drawArrow 3.6s ease-in-out infinite;
 }
 
 .hintArrowHead {
   opacity: 1;
-  animation: arrowHead 2.8s ease-in-out infinite;
+  animation: arrowHead 3.6s ease-in-out infinite;
 }
 
 .hintLabel {
