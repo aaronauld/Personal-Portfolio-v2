@@ -1,6 +1,11 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // pin the workspace root — an unrelated package-lock.json in the home
+  // directory otherwise gets inferred as the root
+  turbopack: { root: dirname(fileURLToPath(import.meta.url)) },
   reactStrictMode: true,
   poweredByHeader: false,
   async headers() {
