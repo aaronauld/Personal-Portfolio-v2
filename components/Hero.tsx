@@ -63,7 +63,16 @@ export function Hero() {
         </div>
         <div className={s.meta}>
           <div className={s.hint} data-hint>
-            GRAB A LETTER
+            <svg className={s.hintArrow} viewBox="0 0 260 190" aria-hidden="true">
+              {/* dash length is the measured path length (304u), rounded up */}
+              <path
+                className={s.hintArrowPath}
+                strokeDasharray="320"
+                d="M246 172C196 180 96 172 52 116 34 94 26 60 24 28"
+              />
+              <path className={s.hintArrowHead} d="M15.7 46.2 24 28l10.5 17" />
+            </svg>
+            <span className={s.hintLabel}>GRAB A LETTER</span>
           </div>
           <div>
             <div className={s.clockLabel}>SYDNEY</div>

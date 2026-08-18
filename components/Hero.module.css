@@ -1,10 +1,36 @@
-@keyframes pulseHint {
-  0%,
-  100% {
-    opacity: 0.45;
+/* The hint arrow draws itself in, holds, then fades — a pulsing label alone
+   was too easy to miss. Base state below is the finished arrow, so switching
+   the animation off (reduced motion) leaves it fully drawn. */
+@keyframes drawArrow {
+  0% {
+    stroke-dashoffset: 320;
+    opacity: 0;
   }
-  50% {
+  14% {
     opacity: 1;
+  }
+  48%,
+  76% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes arrowHead {
+  0%,
+  40% {
+    opacity: 0;
+  }
+  52%,
+  76% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
@@ -196,11 +222,54 @@
 }
 
 .hint {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--accent);
-  animation: pulseHint 2.2s ease-in-out infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
   padding-bottom: 4px;
+  color: var(--accent);
+}
+
+/* a long swoop that ends pointing up at the pills, rather than a token tick
+   next to the label */
+.hintArrow {
+  width: clamp(132px, 21vw, 264px);
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* below ~820px the bottom bar stacks, so the arrow would have to cross the
+   buttons to reach the name — it reads as pointing at them instead. Drop it
+   for a caret on the label. */
+@media (max-width: 820px) {
+  .hintArrow {
+    display: none;
+  }
+
+  .hintLabel::before {
+    content: '\2191\00a0';
+  }
+}
+
+.hintArrowPath {
+  stroke-dashoffset: 0;
+  animation: drawArrow 2.8s ease-in-out infinite;
+}
+
+.hintArrowHead {
+  opacity: 1;
+  animation: arrowHead 2.8s ease-in-out infinite;
+}
+
+.hintLabel {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  white-space: nowrap;
 }
 
 .clockLabel {

@@ -97,8 +97,8 @@ button {
 /* Keyframes live in the CSS Module that uses them — CSS Modules scopes
    animation-name, so a module referencing a keyframe declared here would
    resolve to a name that does not exist:
-     bob        -> components/Connector.module.css
-     pulseHint  -> components/Hero.module.css
+     bob                    -> components/Connector.module.css
+     drawArrow / arrowHead  -> components/Hero.module.css
      marquee    -> components/Stack.module.css
      marqueeR   -> components/Stack.module.css
    The reduced-motion overrides below switch them off by data attribute. */
@@ -192,7 +192,8 @@ button {
 
   [data-marquee],
   [data-bob],
-  [data-hint] {
+  [data-hint],
+  [data-hint] * {
     animation: none !important;
   }
 
