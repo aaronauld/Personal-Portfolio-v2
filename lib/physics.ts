@@ -72,8 +72,14 @@ export async function setupPhysics(
   elements.forEach(clearInlineLayout);
   void layer.offsetHeight; // force reflow
 
-  for (let tries = 0; tries < 10; tries++) {
-    if (elements[0].getBoundingClientRect().width > 0) break;
+  // ...and never an unstyled one either. On a cold start the stylesheet can
+  // land after hydration, and measuring bare spans pins every body to a
+  // garbage home position.
+  const styled = (el: HTMLElement) =>
+    getComputedStyle(el).getPropertyValue('--phys-ready').trim() === '1';
+
+  for (let tries = 0; tries < 20; tries++) {
+    if (styled(elements[0]) && elements[0].getBoundingClientRect().width > 0) break;
     await sleep(120);
   }
 
@@ -117,6 +123,22 @@ export async function setupPhysics(
   );
   Composite.add(engine.world, bodies);
 
+  // Aim the grab hint at the pill row we just measured. The tip sits at
+  // (24,28) in the arrow's 260x190 viewBox; place it a little under the row's
+  // last pill so the swoop's tail still falls toward the label in the corner.
+  const arrow = root.querySelector<HTMLElement>('[data-hint-arrow]');
+  const pills = items.filter((item) => item.el.hasAttribute('data-pill'));
+  const aimArrow = () => {
+    if (!arrow || !pills.length) return;
+    const rect = arrow.getBoundingClientRect();
+    if (!rect.width) return; // hidden on narrow layouts
+    const last = pills[pills.length - 1];
+    const rowBottom = Math.max(...pills.map((p) => p.y + p.h / 2));
+    arrow.style.left = `${last.x - (rect.width * 24) / 260}px`;
+    arrow.style.top = `${rowBottom + 16 - (rect.height * 28) / 190}px`;
+  };
+  aimArrow();
+
   const makeWalls = () => {
     const w = layer.clientWidth;
     const h = layer.clientHeight;
@@ -150,14 +172,14 @@ export async function setupPhysics(
   layer.removeEventListener('touchmove', listeners.mousemove);
   layer.removeEventListener('touchend', listeners.mouseup);
 
-  const hint = root.querySelector<HTMLElement>('[data-hint]');
+  const hints = Array.from(root.querySelectorAll<HTMLElement>('[data-hint]'));
   const wake = () => {
     if (reducedMotion) return; // leave the composition typeset
     engine.gravity.y = 1;
-    if (hint) {
+    hints.forEach((hint) => {
       hint.style.transition = 'opacity .4s';
       hint.style.opacity = '0';
-    }
+    });
   };
   Events.on(mouseConstraint, 'startdrag', wake);
   const onTouchStart = () => wake();
@@ -192,7 +214,7 @@ export async function setupPhysics(
       Body.setVelocity(body, { x: 0, y: 0 });
       Body.setAngularVelocity(body, 0);
     });
-    if (hint) hint.style.opacity = '';
+    hints.forEach((hint) => (hint.style.opacity = ''));
   };
   resetButton?.addEventListener('click', reset);
 
@@ -200,6 +222,9 @@ export async function setupPhysics(
     Composite.remove(engine.world, walls);
     walls = makeWalls();
     Composite.add(engine.world, walls);
+    // bodies keep their measured homes across a resize, but the arrow's
+    // clamped width (and so its tip offset) changes
+    aimArrow();
   };
   window.addEventListener('resize', onResize);
 
@@ -218,7 +243,7 @@ export async function setupPhysics(
       layer.removeEventListener('touchstart', onTouchStart);
       resetButton?.removeEventListener('click', reset);
       elements.forEach(clearInlineLayout);
-      if (hint) hint.style.opacity = '';
+      hints.forEach((hint) => (hint.style.opacity = ''));
     },
   };
 }

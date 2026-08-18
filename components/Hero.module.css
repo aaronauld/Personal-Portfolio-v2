@@ -59,6 +59,10 @@
 }
 
 .stack {
+  /* physics waits on this before measuring: it inherits down to the letters,
+     so it is proof this stylesheet has actually applied. Measuring unstyled
+     spans saves garbage "home" positions. */
+  --phys-ready: 1;
   position: absolute;
   inset: 0;
   display: flex;
@@ -222,17 +226,19 @@
 }
 
 .hint {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  padding-bottom: 4px;
   color: var(--accent);
+  padding-bottom: 4px;
 }
 
-/* a long swoop that ends pointing up at the pills, rather than a token tick
-   next to the label */
+/* A long swoop ending in an arrowhead that points up at the pills. Its
+   left/top are written by lib/physics.ts from the measured pill row —
+   anchoring it in the bottom bar left the tip drifting with viewport width. */
 .hintArrow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  pointer-events: none;
   width: clamp(132px, 21vw, 264px);
   height: auto;
   overflow: visible;
@@ -241,6 +247,7 @@
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: opacity 0.4s ease;
 }
 
 /* below ~820px the bottom bar stacks, so the arrow would have to cross the
