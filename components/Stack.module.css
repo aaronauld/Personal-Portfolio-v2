@@ -1,3 +1,22 @@
+/* the list is rendered twice, so translating -50% loops seamlessly */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marqueeR {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 .section {
   padding: clamp(40px, 6vh, 72px) 0 0;
 }

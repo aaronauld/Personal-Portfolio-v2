@@ -1,3 +1,13 @@
+@keyframes pulseHint {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .hero {
   position: relative;
   height: 100svh;

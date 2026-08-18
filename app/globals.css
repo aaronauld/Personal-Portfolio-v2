@@ -94,44 +94,14 @@ button {
   border-radius: 4px;
 }
 
-/* ------------------------------------------------------------------ Motion */
-@keyframes bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(7px);
-  }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes marqueeR {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes pulseHint {
-  0%,
-  100% {
-    opacity: 0.45;
-  }
-  50% {
-    opacity: 1;
-  }
-}
+/* Keyframes live in the CSS Module that uses them — CSS Modules scopes
+   animation-name, so a module referencing a keyframe declared here would
+   resolve to a name that does not exist:
+     bob        -> components/Connector.module.css
+     pulseHint  -> components/Hero.module.css
+     marquee    -> components/Stack.module.css
+     marqueeR   -> components/Stack.module.css
+   The reduced-motion overrides below switch them off by data attribute. */
 
 /* ------------------------------------------------- Reveal primitives
    IntersectionObserver in components/SiteEffects.tsx stamps data-revealed

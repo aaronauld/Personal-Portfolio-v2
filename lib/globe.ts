@@ -167,11 +167,11 @@ function build(mount: HTMLElement, options: Options, onContextRestored: () => vo
   const mid = sydney.clone().add(newYork).multiplyScalar(0.5).normalize().multiplyScalar(R * 1.55);
   const curve = new THREE.QuadraticBezierCurve3(sydney, mid, newYork);
   const arcGeometry = new THREE.TubeGeometry(curve, 64, 0.014, 8, false);
-  const arcMaterial = new THREE.MeshBasicMaterial({
-    color: accent.clone(),
-    transparent: true,
-    opacity: 0.92,
-  });
+  // Opaque on purpose: a transparent arc is sorted after the inner shell, which
+  // shares its origin, so the shell's depth write hid the arc whenever it
+  // rotated to the far side. Drawing it in the opaque pass (like the markers)
+  // means the shell tints it instead — visible through the globe, crisp in front.
+  const arcMaterial = new THREE.MeshBasicMaterial({ color: accent.clone() });
   disposables.push(arcGeometry, arcMaterial);
 
   const arcMesh = new THREE.Mesh(arcGeometry, arcMaterial);
