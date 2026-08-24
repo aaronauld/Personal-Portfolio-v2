@@ -1,7 +1,6 @@
 # aaronauld.com
 
-Personal site — a single scrolling page built from the `design_handoff_personal_site`
-handoff. Two signature pieces carry it: a hero where the name and tech pills are real
+Personal site — a single scrolling page. Two signature pieces carry it: a hero where the name and tech pills are real
 rigid bodies in a matter.js simulation, and a three.js globe with a Sydney → New York
 arc that pins beside the About copy.
 
